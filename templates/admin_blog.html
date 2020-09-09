@@ -1,0 +1,37 @@
+{% extends 'base.html'%}
+
+{% block head %}
+<title>Blog</title>
+{% endblock %}
+
+{% block body %}
+<div>
+    <h1 style ='display:inline'>Posts</h1>
+    <a href='/blog/new_post' style="float:right; margin-top:10px; " class="btn btn-success" >+ New Post</a>
+</div>
+<hr>
+{% if posts %}
+    {% for post in posts %}
+    {% if post.title %}
+    <h1>{{post.title}} </h1>
+    {% else %}
+    <h1>Untitled Blog Post</h1>
+    {%  endif%}
+    <p style="white-space: pre-wrap;">{{ post.content }}</p>
+    {% if post.author %}
+    <i>-{{ post.author }}</i>
+    {% else %}
+    <i>-Anonymous</i>
+    {%  endif%}
+    <br>
+    <span>{{ post.post_edited }} on {{ post.date_time.strftime("%d %b %Y %H:%M") }}</span>
+    <br><br>
+    <a href="/blog/delete/{{ post.id }}" class="btn btn-danger">Delete</a>
+    <a href="/blog/edit/{{ post.id }}" class="btn btn-primary">Edit</a>
+    <hr>
+    {% endfor%}
+{% else %}
+    <h3>No posts found ! Click here to <a href="/blog/new_post">Create a new post now</a> .</h3>
+{% endif%}
+<a class="btn btn-info" href="/blog">Log Out</a>
+{% endblock %}

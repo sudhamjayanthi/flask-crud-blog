@@ -1,0 +1,36 @@
+{% extends 'base.html'%}
+
+{% block head %}
+<title>Login</title>
+{% endblock %}
+
+{% block body %}
+{% if not auth %}   
+    <br><h1>Login</h1>
+    <hr>
+    <form action="/admin" method="POST">
+        Username :<br><input type="text" name="username" id="username" placeholder='Enter username' class="form-control">
+        <br>
+        Password : <br><input type="password" name="password" id="password" placeholder='Enter password'
+            class="form-control">
+        <br>
+        <span style="color: red;">Incorrect username or password</span><br><br>
+        <input style="display:inline;" type="submit" value="Login" class="btn btn-primary">
+        <a href="/blog" class="btn btn-danger">Cancel</a>
+    </form>
+    <hr>
+{% else %}
+    <br><h1>Login</h1>
+    <hr>
+    <form action="/admin" method="POST">
+        Username :<br><input type="text" name="username" id="username" placeholder='Enter username' class="form-control">
+        <br>
+        Password : <br><input type="password" name="password" id="password" placeholder='Enter password'
+            class="form-control">
+        <br>
+        <input style="display:inline;" type="submit" value="Login" class="btn btn-primary">
+        <a href="/blog" class="btn btn-danger">Cancel</a>
+    </form>
+    <hr>
+{% endif %}
+{% endblock %}

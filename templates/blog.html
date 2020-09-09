@@ -1,0 +1,31 @@
+{% extends 'base.html'%}
+
+{% block head %}
+<title>Blog</title>
+{% endblock %}
+
+{% block body %}
+    <h1>Posts</h1>
+<hr>
+{% if posts %}
+    {% for post in posts %}
+    {% if post.title %}
+    <h1>{{post.title}} </h1>
+    {% else %}
+    <h1>Untitled Blog Post</h1>
+    {%  endif%}
+    <p style="white-space: pre-wrap;">{{ post.content }}</p>
+    {% if post.author %}
+    <i>-{{ post.author }}</i>
+    {% else %}
+    <i>-Anonymous</i>
+    {%  endif%}
+    <br>
+    <span>{{ post.post_edited }} on {{ post.date_time.strftime("%d %b %Y %H:%M") }}</span>
+    <br><br>
+    <hr>
+    {% endfor%}
+{% else %}
+    <h3> No posts found ! </h3>
+{% endif%}
+{% endblock %}
