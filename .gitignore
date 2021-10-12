@@ -1,1 +1,9 @@
 .env
+
+feedback.csv
+posts.db
+
+.deta/
+.vscode/
+
+venv/

@@ -1,0 +1,4 @@
+requests==2.26.0
+Flask==2.0.0
+flask_sqlalchemy==2.5.1
+python-dotenv==0.19.1

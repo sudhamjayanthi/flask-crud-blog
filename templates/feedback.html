@@ -16,8 +16,8 @@
 		<span style="font-size:30px">&#128544;   </span>   <input type="range" min="0" max="5" id="rating" name="rating" default = 5 ><span style="font-size:30px" >  &#128525;</span><br><br>
 		<input type="submit" value="Submit" class="btn btn-primary">
 	</form><br>
-	{% if thank %}
-  <p class="alert alert-success">{{ thank }}</p>
+	{% if msg %}
+  		<p class="alert alert-success">{{ msg }}</p>
 	{% endif %}
    
 {% endblock %}

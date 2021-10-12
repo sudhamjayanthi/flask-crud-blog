@@ -5,32 +5,26 @@
 {% endblock %}
 
 {% block body %}
-{% if not auth %}   
-    <br><h1>Login</h1>
+    <br>
+        <h1>Login</h1>
     <hr>
     <form action="/admin" method="POST">
-        Username :<br><input type="text" name="username" id="username" placeholder='Enter username' class="form-control">
+        <label for="username"> Username : </label>
         <br>
-        Password : <br><input type="password" name="password" id="password" placeholder='Enter password'
-            class="form-control">
+            <input type="text" name="username" id="username" placeholder='Enter username' class="form-control">
         <br>
-        <span style="color: red;">Incorrect username or password</span><br><br>
+        <label for="username">Password : </label>
+        <br>
+            <input type="password" name="password" id="password" placeholder="Enter password" class="form-control">
+        <br>
+
+        {% if show_error %}   
+            <span style="color: red;">Incorrect username or password</span><br><br>
+        {% endif %}
+
         <input style="display:inline;" type="submit" value="Login" class="btn btn-primary">
+        
         <a href="/blog" class="btn btn-danger">Cancel</a>
     </form>
     <hr>
-{% else %}
-    <br><h1>Login</h1>
-    <hr>
-    <form action="/admin" method="POST">
-        Username :<br><input type="text" name="username" id="username" placeholder='Enter username' class="form-control">
-        <br>
-        Password : <br><input type="password" name="password" id="password" placeholder='Enter password'
-            class="form-control">
-        <br>
-        <input style="display:inline;" type="submit" value="Login" class="btn btn-primary">
-        <a href="/blog" class="btn btn-danger">Cancel</a>
-    </form>
-    <hr>
-{% endif %}
 {% endblock %}

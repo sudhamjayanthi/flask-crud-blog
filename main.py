@@ -1,25 +1,23 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime as dt
-import csv
-import requests
-import os
 from dotenv import load_dotenv
+import requests
+import csv
+import os
+
 load_dotenv()
 
-url = os.getenv('url')
+WEBHOOK_URL = os.getenv('IFTTT_WEBHOOK_URL')
+USERNAME = os.getenv('USERNAME')
+PASS = os.getenv('PASS')
 
-app = Flask(__name__, template_folder="templates", static_folder="static")
-
-usernames = ['Sudham', 'fiitjee', 'Akhilesh']
-
-pws = ['2020', 'friends', '2006']
-
+app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
 
 db = SQLAlchemy(app)
 
-
+# MODEL
 class Post(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	title = db.Column(db.String(50), nullable=False)
@@ -28,56 +26,12 @@ class Post(db.Model):
 	date_time = db.Column(db.DateTime, nullable=True, default=dt.now)
 	post_edited = db.Column(db.String, default='Posted')
 
-	def __repr__(self):
-		return 'Blog post ' + str(self.id)
 
-
-class User(db.Model):
-	user = db.Column(db.String(10), primary_key=True, nullable=False)
-	pw = db.Column(db.String(15), nullable=False)
-
-	def __repr__(self):
-		return str(self.username)
-
-
+# CONTROLLERS
 @app.route("/")
 def home():
 	return render_template("home.html")
 
-
-@app.route('/feedback', methods=['GET', 'POST'])
-def feedback():
-	if request.method == 'POST':
-		name = request.form['name']
-		feedback = request.form['feedback']
-		rating = request.form['rating']
-		row = [str(name), str(feedback), str(rating)]
-		with open('feedback.csv', 'a', newline='') as file:
-			writer = csv.writer(file)
-			writer.writerow(row)
-			file.close()
-		data = {'value1': name, 'value2': rating, 'value3': feedback}
-		requests.post(url, data)
-		return render_template(
-		    'feedback.html', thank='Thank you for your valuable feedback')
-	else:
-		return render_template('feedback.html', thank=None)
-
-
-@app.route('/admin', methods=['GET', 'POST'])
-def login():
-	if request.method == 'POST':
-		if request.form['username'] in usernames and request.form[
-		    'password'] in pws:
-			all_posts = Post.query.order_by(Post.date_time.desc())
-			return render_template('admin_blog.html', posts=all_posts)
-		else:
-			return render_template('login.html', auth=False)
-	else:
-		return render_template('login.html', auth=True)
-
-
-# BLOG #
 @app.route('/blog', methods=['GET', 'POST'])
 def blog():
 	all_posts = Post.query.order_by(Post.date_time.desc())
@@ -87,9 +41,12 @@ def blog():
 @app.route('/blog/delete/<id>')
 def delete(id):
 	post = Post.query.get_or_404(id)
+
 	db.session.delete(post)
 	db.session.commit()
+
 	all_posts = Post.query.order_by(Post.date_time.desc())
+
 	return render_template("admin_blog.html", posts=all_posts)
 
 
@@ -112,19 +69,57 @@ def edit(id):
 @app.route('/blog/new_post', methods=['GET', 'POST'])
 def new_post():
 	if request.method == 'POST':
-		post_title = request.form['title']
-		post_content = request.form['content']
-		post_author = request.form['author']
-		new_post = Post(
-		    title=post_title, content=post_content, author=post_author)
+		title = request.form['title']
+		content = request.form['content']
+		author = request.form['author']
+
+		new_post = Post(title=title, content=content, author=author)
+
 		db.session.add(new_post)
 		db.session.commit()
+
 		all_posts = Post.query.order_by(Post.date_time.desc())
 		return render_template("admin_blog.html", posts=all_posts)
-	else:
+
+	elif request.method == 'GET':
 		return render_template('new_post.html')
 
+@app.route('/admin', methods=['GET', 'POST'])
+def login():
+	if request.method == 'POST':
+		# Contact me at hey@sudham.tk for these login credentials if you want to see a demo
+		valid_credentials = request.form['username'] == username and request.form['password'] == pwd
 
-# BLOG CODE ENDS #
+		if valid_credentials:
+			all_posts = Post.query.order_by(Post.date_time.desc())
+			return render_template('admin_blog.html', posts=all_posts)
+		else:
+			return render_template('login.html', show_error=True)
+
+	elif request.method == "GET":
+		return render_template('login.html', show_error=False)
+
+@app.route('/feedback', methods=['GET', 'POST'])
+def feedback():
+	if request.method == 'POST':
+		name = request.form['name']
+		feedback = request.form['feedback']
+		rating = request.form['rating']
+
+		row = map(str, [name, feedback, rating])
+
+		with open('feedback.csv', 'a', newline='') as file:
+			writer = csv.writer(file)
+			writer.writerow(row)
+			file.close()
+
+		# Posts a webhook to IFTTT to send me a email when someone submits a feedback
+		requests.post(WEBHOOK_URL, {'value1': name, 'value2': rating, 'value3': feedback}) 
+
+		return render_template('feedback.html', msg='Thank you for your valuable feedback')
+
+	else:
+		return render_template('feedback.html', msg=None)
+
 if __name__ == "__main__":
-	app.run('0.0.0.0', 8080)
+	app.run()
