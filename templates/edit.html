@@ -13,7 +13,7 @@
     <br>
     Content :
     <br>
-    <textarea  class="form-control" id="content" name="content" rows="3" required=True placeholder="Enter content" >{{post.content}}</textarea>
+    {{ ckeditor.create(value=post.content) }}
     <br>
     Author :
     <br>
@@ -22,5 +22,7 @@
     <input type="submit" value="Save" class="btn btn-success">
 </form>
 <hr>
+
+{{ ckeditor.load() }}
 
 {% endblock %}

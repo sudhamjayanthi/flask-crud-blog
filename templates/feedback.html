@@ -1,23 +1,24 @@
-
 {% extends 'base.html'%}
 
-{% block head %} 
-    <title>Feedback</title>
+{% block head %}
+<title>Feedback</title>
 {% endblock %}
 
 {% block body %}
-  <br>
-	<form action="/feedback" method='POST'>
-		Name:<br>
-		<input type="text" placeholder="Your name" name="name" id="name" class="form-control"><br>
-		Feedback:<br>
-		<textarea cols="2" class="form-control" name="feedback" id = "feedback"  placeholder="Type your feedback" required= True ></textarea><br>
-		Overall rating:<br>
-		<span style="font-size:30px">&#128544;   </span>   <input type="range" min="0" max="5" id="rating" name="rating" default = 5 ><span style="font-size:30px" >  &#128525;</span><br><br>
-		<input type="submit" value="Submit" class="btn btn-primary">
-	</form><br>
-	{% if msg %}
-  		<p class="alert alert-success">{{ msg }}</p>
-	{% endif %}
-   
+<br>
+<form action="/feedback" method='POST'>
+	Name:<br>
+	<input type="text" placeholder="Your name" name="name" id="name" class="form-control"><br>
+	Feedback:<br>
+	<textarea cols="2" class="form-control" name="feedback" id="feedback" placeholder="Type your feedback"
+		required=True></textarea><br>
+	Overall rating:<br>
+	<span style="font-size:30px">&#128544; </span> <input type="range" min="0" max="5" id="rating" name="rating"
+		default=5><span style="font-size:30px"> &#128525;</span><br><br>
+	<input type="submit" value="Submit" class="btn btn-primary">
+</form><br>
+{% if msg %}
+<p class="alert alert-success">{{ msg }}</p>
+{% endif %}
+
 {% endblock %}

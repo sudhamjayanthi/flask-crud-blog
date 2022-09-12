@@ -14,7 +14,7 @@
     {% else %}
     <h1>Untitled Blog Post</h1>
     {%  endif%}
-    <p style="white-space: pre-wrap;">{{ post.content }}</p>
+    <p style="white-space: pre-wrap;">{{ post.content|safe }}</p>
     {% if post.author %}
     <i>-{{ post.author }}</i>
     {% else %}

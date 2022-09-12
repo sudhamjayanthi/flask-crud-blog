@@ -13,16 +13,17 @@
 <form action="/blog/new_post" method="POST">
     Title : <br><input type="text" name="title" id="title" placeholder='Enter Title' class="form-control">
     <br>
-    Content : <br>
-    <textarea class="form-control" id="content" name="content" rows="3" required=True
-        placeholder='Enter Content'></textarea>
+    Content : <br> 
+         {{ ckeditor.create() }}
+    <br>
     <br>
     Author : <br> <input type="text" name="author" id="author" placeholder='Enter Author' class="form-control">
     <br>
     <input style="display:inline;" type="submit" value="Post" class="btn btn-primary">
     <a href="/blog" class="btn btn-danger">Cancel</a>
 </form>
-
-
 <hr>
+
+{{ ckeditor.load() }}
+
 {% endblock %}

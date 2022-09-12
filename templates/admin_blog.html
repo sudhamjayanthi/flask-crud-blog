@@ -11,13 +11,13 @@
 </div>
 <hr>
 {% if posts %}
-    {% for post in posts %}
+    {% for (index, post) in enumerate(posts) %}
     {% if post.title %}
     <h1>{{post.title}} </h1>
     {% else %}
     <h1>Untitled Blog Post</h1>
     {%  endif%}
-    <p style="white-space: pre-wrap;">{{ post.content }}</p>
+    <p style="white-space: pre-wrap;">{{ post.content|safe }}</p>
     {% if post.author %}
     <i>-{{ post.author }}</i>
     {% else %}
@@ -26,8 +26,10 @@
     <br>
     <span>{{ post.post_edited }} on {{ post.date_time.strftime("%d %b %Y %H:%M") }}</span>
     <br><br>
-    <a href="/blog/delete/{{ post.id }}" class="btn btn-danger">Delete</a>
-    <a href="/blog/edit/{{ post.id }}" class="btn btn-primary">Edit</a>
+        {% if index > 4 %} 
+            <a href="/blog/delete/{{ post.id }}" class="btn btn-danger">Delete</a>
+            <a href="/blog/edit/{{ post.id }}" class="btn btn-primary">Edit</a>
+        {% endif%}
     <hr>
     {% endfor%}
 {% else %}

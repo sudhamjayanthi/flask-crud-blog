@@ -1,6 +1,5 @@
 .env
 
-feedback.csv
 posts.db
 
 .deta/

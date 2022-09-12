@@ -1,23 +1,25 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+from flask_ckeditor import CKEditor
 from datetime import datetime as dt
 from dotenv import load_dotenv
 import requests
 import csv
 import os
 
-load_dotenv()
-
-WEBHOOK_URL = os.getenv('IFTTT_WEBHOOK_URL')
-USERNAME = os.getenv('USERNAME')
-PASS = os.getenv('PASS')
-
 app = Flask(__name__)
+ckeditor = CKEditor(app)
+
+load_dotenv()
+WEBHOOK_URL = os.getenv('IFTTT_WEBHOOK_URL')
+USERNAME = os.getenv('LOGIN_USERNAME')
+PASS = os.getenv('LOGIN_PASS')
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# MODEL
 class Post(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	title = db.Column(db.String(50), nullable=False)
@@ -27,7 +29,6 @@ class Post(db.Model):
 	post_edited = db.Column(db.String, default='Posted')
 
 
-# CONTROLLERS
 @app.route("/")
 def home():
 	return render_template("home.html")
@@ -40,6 +41,10 @@ def blog():
 
 @app.route('/blog/delete/<id>')
 def delete(id):
+
+	if id < 4 :
+		return redirect('/blog')
+
 	post = Post.query.get_or_404(id)
 
 	db.session.delete(post)
@@ -52,15 +57,21 @@ def delete(id):
 
 @app.route('/blog/edit/<id>', methods=['GET', 'POST'])
 def edit(id):
+	if id < 4 :
+		return redirect('/blog')
+
 	post = Post.query.get_or_404(id)
+
 	if request.method == 'POST':
 		post.title = request.form['title']
-		post.content = request.form['content']
+		post.content = request.form.get("ckeditor")
 		post.author = request.form['author']
 		post.date_time = dt.now()
 		post.post_edited = 'Edited'
+		
 		db.session.commit()
 		all_posts = Post.query.order_by(Post.date_time.desc())
+
 		return render_template("admin_blog.html", posts=all_posts)
 	else:
 		return render_template("edit.html", post=post)
@@ -70,7 +81,7 @@ def edit(id):
 def new_post():
 	if request.method == 'POST':
 		title = request.form['title']
-		content = request.form['content']
+		content = request.form.get("ckeditor")
 		author = request.form['author']
 
 		new_post = Post(title=title, content=content, author=author)
@@ -88,9 +99,7 @@ def new_post():
 def login():
 	if request.method == 'POST':
 		# Contact me at hey@sudham.tk for these login credentials if you want to see a demo
-		valid_credentials = request.form['username'] == username and request.form['password'] == pwd
-
-		if valid_credentials:
+		if request.form['username'] == USERNAME and request.form['password'] == PASS:
 			all_posts = Post.query.order_by(Post.date_time.desc())
 			return render_template('admin_blog.html', posts=all_posts)
 		else:
@@ -106,12 +115,13 @@ def feedback():
 		feedback = request.form['feedback']
 		rating = request.form['rating']
 
-		row = map(str, [name, feedback, rating])
+		# Deta.sh doesn't allow to write things in a file, hence removed feedback.csv 
+		# row = map(str, [name, feedback, rating])
 
-		with open('feedback.csv', 'a', newline='') as file:
-			writer = csv.writer(file)
-			writer.writerow(row)
-			file.close()
+		# with open('feedback.csv', 'a', newline='') as file:
+		# 	writer = csv.writer(file)
+		# 	writer.writerow(row)
+		# 	file.close()
 
 		# Posts a webhook to IFTTT to send me a email when someone submits a feedback
 		requests.post(WEBHOOK_URL, {'value1': name, 'value2': rating, 'value3': feedback}) 
@@ -120,6 +130,7 @@ def feedback():
 
 	else:
 		return render_template('feedback.html', msg=None)
+
 
 if __name__ == "__main__":
 	app.run()

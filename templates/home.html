@@ -1,21 +1,25 @@
 {% extends 'base.html'%}
 
-{% block head %} 
-    <title>Home</title>
+{% block head %}
+<title>Home</title>
 {% endblock %}
 
 {% block body %}
-    <br><br>
-    <h1>Sudham Jayanthi</h1>
-    <br><br>
-    <main role="main">
-        <div class="jumbotron">
-          <div class="col-sm-8 mx-auto">
-            <h1>Welcome </h1>
-							<p>Hey there, Welcome to my blog! Go through all pages and features of my blog and submit your feedback <a href="/feedback">here</a>.</p>
-              <a class="btn btn-primary" href="/blog" role="button">Go to posts »</a>
-          </div>
-        </div>
-      </main>
-   
+<br><br>
+<main role="main">
+  <br><br><br><br>
+  <div class="jumbotron">
+    <div class="col-sm-8 mx-auto">
+      <h3>Hey there! </h3>
+      <p>
+        Welcome to my blog. I am Sudham, you can find me posting some random content here. Go through all pages and
+        features of my blog and submit your feedback <a href="/feedback">here.</a> <br><br><em>Note: This was built
+          while learning flask &amp; don't expect much posts here :)</em>
+      </p>
+      <br>
+      <a class="btn btn-primary" href="/blog" role="button">Go to posts »</a>
+    </div>
+  </div>
+</main>
+
 {% endblock %}
